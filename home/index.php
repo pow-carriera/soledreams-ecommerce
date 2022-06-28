@@ -1,3 +1,13 @@
+<?php
+include("./assets/php/indexlogic.php");
+include("./assets/php/config.php");
+if(isset($_GET["order"])) {
+$order = $_GET["order"];
+if($order == true) {
+    echo "<script>alert('Order successful!')</script>";
+}
+} 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,7 +60,7 @@
             <!-- Right elements -->
             <div class="d-flex align-items-center">
                 <!-- Icon -->
-                <a class="text-reset me-3" href="#">
+                <a class="text-reset me-3" href="cart.php">
                     <i class="fas fa-shopping-cart fa-2xl"></i>
                 </a>
                 <!-- Avatar -->
@@ -60,10 +70,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>
-                            <a class="dropdown-item" href="#">My profile</a>
+                            <a class="dropdown-item" href="#">My Profile: <?php echo $username; ?></a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="#">Password reset</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="logout.php">Logout</a>
@@ -79,22 +89,31 @@
     <!-- Product List -->
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6 col-xl-4">
-                <div class="card text-black">
-                    <img src="./img/products/nike-dunk-low.webp" class="card-img-top" alt="Apple Computer" />
-                    <div class="card-body">
-                        <div class="text-center">
-                            <h5 class="card-title">Nike Dunk Low</h5>
+            <?php
+            $sql = "SELECT * FROM products";
+            if ($result = mysqli_query($link, $sql)) {
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_array($result)) {
+            ?>
+                        <div class="col-md-8 col-lg-6 col-xl-4">
+                            <div class="card text-black">
+                                <img src="<?php echo $row["product_img"] ?>" class="card-img-top" alt="Apple Computer" />
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <h5 class="card-title"><?php echo $row["product_vendor"] ?> <?php echo $row["product_name"]?> </h5>
+                                    </div>
+                                    <div class="text-center font-weight-bold mt-2">
+                                        <span>Price: ₱<?php echo $row["product_price"] ?></span>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="btn primary" href="addtocart.php?product_id=<?php echo $row["product_id"]?>">Add to Cart</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-center font-weight-bold mt-2">
-                            <span>Price: ₱6599.99</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                        <button class="btn primary" href="">Add to Cart</button><button class="btn primary" href="">Buy Now</button>
-                        </div
-                    </div>
-                </div>
-            </div>
+            <?php   }
+                }
+            } ?>
         </div>
     </div>
     <!-- Navbar -->
